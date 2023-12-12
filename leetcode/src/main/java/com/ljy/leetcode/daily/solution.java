@@ -1,11 +1,9 @@
 package com.ljy.leetcode.daily;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
- * @author  ljy
+ * @author ljy
  */
 public class solution {
     private int ans;
@@ -13,10 +11,11 @@ public class solution {
     /**
      * 2023-12-05
      * 2477. 到达首都的最少油耗
+     *
      * @param roads
      * @param seats
-     * @Da
      * @return
+     * @Da
      */
     public long minimumFuelCost(int[][] roads, int seats) {
         int n = roads.length + 1;
@@ -48,6 +47,7 @@ public class solution {
     /**
      * 2023/12/07
      * 1466. 重新规划路线
+     *
      * @param n
      * @param connections
      * @return
@@ -75,4 +75,86 @@ public class solution {
         return res;
     }
 
+    /**
+     * 2023/12/08
+     * 2008. 出租车的最大盈利
+     *
+     * @param n
+     * @param rides
+     * @return
+     */
+    public long maxTaxiEarnings(int n, int[][] rides) {
+        List<int[]>[] groups = new ArrayList[n + 1];
+        for (int[] r : rides) {
+            int start = r[0], end = r[1], tips = r[2];
+            if (groups[end] == null) {
+                groups[end] = new ArrayList<>();
+            }
+            groups[end].add(new int[]{start, end - start + tips});
+        }
+        long[] memo = new long[n + 1];
+        for (int i = 2; i <= n; i++) {
+            memo[i] = memo[i-1];
+            if (groups[i] != null) {
+                for (int[] p : groups[n]) {
+                    memo[i] = Math.max(memo[i], memo[p[0]] + p[1]);
+                }
+            }
+        }
+        return memo[n];
+//        Arrays.fill(memo, -1);
+//        //递归
+//        return dfs(n,memo, groups);
+    }
+
+
+    private long dfs(int n, long[] memo, List<int[]>[] groups) {
+        if (n == 1) {
+            return 0;
+        }
+        if (memo[n] != -1) {
+            return memo[n];
+        }
+        long res = dfs(n - 1, memo, groups);
+        if (groups[n] != null) {
+            for (int[] p : groups[n]) {
+                res = Math.max(res, dfs(p[0], memo, groups) + p[1]);
+            }
+        }
+        return memo[n]=res;
+    }
+
+
+    /**
+     * 2048. 下一个更大的数值平衡数
+     * @param n
+     * @return
+     */
+        public int nextBeautifulNumber(int n) {
+            int i = n+1;
+            while (true) {
+                if (isBeautifulNumber(i)){
+                    break;
+                }
+                i++;
+            }
+            return i;
+        }
+
+        private boolean isBeautifulNumber(int n){
+            Map<Integer, Integer> map = new HashMap<>();
+            String s = String.valueOf(n);
+            for (int i = 0; i< s.length(); i++) {
+                int temp = s.charAt(i) - '0';
+                Integer orDefault = map.getOrDefault(temp, 0);
+                map.put(temp, orDefault+1);
+            }
+            for (int key : map.keySet()) {
+                Integer integer = map.get(key);
+                if (integer != key) {
+                    return false;
+                }
+            }
+            return true;
+        }
 }

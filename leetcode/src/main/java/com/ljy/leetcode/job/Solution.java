@@ -60,6 +60,7 @@ public class Solution {
 
     /**
      * 503. 下一个更大元素 II
+     *
      * @param nums
      * @return
      */
@@ -81,6 +82,7 @@ public class Solution {
 
     /**
      * 496. 下一个更大元素 I
+     *
      * @param nums1
      * @param nums2
      * @return
@@ -105,18 +107,19 @@ public class Solution {
 
     /**
      * 456. 132 模式
+     *
      * @param nums
      * @return
      */
     public boolean find132pattern(int[] nums) {
         Stack<Integer> stack = new Stack<>();
         int k = Integer.MIN_VALUE;
-        for (int i = nums.length-1; i >=0 ; --i) {
+        for (int i = nums.length - 1; i >= 0; --i) {
             int temp = nums[i];
-            if (temp < k){
+            if (temp < k) {
                 return true;
             }
-            while (!stack.empty() && temp >stack.peek()) {
+            while (!stack.empty() && temp > stack.peek()) {
                 k = stack.pop();
             }
             if (temp > k) {
@@ -124,5 +127,32 @@ public class Solution {
             }
         }
         return false;
+    }
+
+    /**
+     * 1124. 表现良好的最长时间段
+     *
+     * @param hours
+     * @return
+     */
+    public int longestWPI(int[] hours) {
+        int n = hours.length;
+        int ans = 0;
+        //前缀和
+        int[] s = new int[n + 1];
+        Stack<Integer> stack = new Stack<>();
+        stack.push(0);
+        for (int i = 1; i <= n; i++) {
+            s[i] = s[i - 1] + (hours[i-1] > 8 ? 1 : -1);
+            if (s[i] < s[stack.peek()]) {
+                stack.push(i);
+            }
+        }
+        for (int i = n; i > 0; --i) {
+            while (!stack.empty() && s[i] > s[stack.peek()]) {
+                ans = Math.max(ans, i-stack.pop());
+            }
+        }
+        return ans;
     }
 }
