@@ -94,7 +94,7 @@ public class solution {
         }
         long[] memo = new long[n + 1];
         for (int i = 2; i <= n; i++) {
-            memo[i] = memo[i-1];
+            memo[i] = memo[i - 1];
             if (groups[i] != null) {
                 for (int[] p : groups[n]) {
                     memo[i] = Math.max(memo[i], memo[p[0]] + p[1]);
@@ -121,40 +121,109 @@ public class solution {
                 res = Math.max(res, dfs(p[0], memo, groups) + p[1]);
             }
         }
-        return memo[n]=res;
+        return memo[n] = res;
     }
 
 
     /**
      * 2048. 下一个更大的数值平衡数
+     *
      * @param n
      * @return
      */
-        public int nextBeautifulNumber(int n) {
-            int i = n+1;
-            while (true) {
-                if (isBeautifulNumber(i)){
-                    break;
-                }
-                i++;
+    public int nextBeautifulNumber(int n) {
+        int i = n + 1;
+        while (true) {
+            if (isBeautifulNumber(i)) {
+                break;
             }
-            return i;
+            i++;
+        }
+        return i;
+    }
+
+    private boolean isBeautifulNumber(int n) {
+        Map<Integer, Integer> map = new HashMap<>();
+        String s = String.valueOf(n);
+        for (int i = 0; i < s.length(); i++) {
+            int temp = s.charAt(i) - '0';
+            Integer orDefault = map.getOrDefault(temp, 0);
+            map.put(temp, orDefault + 1);
+        }
+        for (int key : map.keySet()) {
+            Integer integer = map.get(key);
+            if (integer != key) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 2023/12/13
+     * 2697. 字典序最小回文串
+     *
+     * @param s
+     * @return
+     */
+    public String makeSmallestPalindrome(String s) {
+        char[] charArray = s.toCharArray();
+        for (int i = 0; i < s.length()/2; i++) {
+            char c =charArray[i];
+            char d = charArray[s.length()-i-1];
+            if (c != d){
+                charArray[i] = charArray[s.length()-i-1] = (char) Math.max(c,d);
+            }
         }
 
-        private boolean isBeautifulNumber(int n){
-            Map<Integer, Integer> map = new HashMap<>();
-            String s = String.valueOf(n);
-            for (int i = 0; i< s.length(); i++) {
-                int temp = s.charAt(i) - '0';
-                Integer orDefault = map.getOrDefault(temp, 0);
-                map.put(temp, orDefault+1);
+        return  new String(charArray);
+    }
+
+    /**
+     *  2023/12/13
+     *  2132. 用邮票贴满网格图
+     * @param grid
+     * @param stampHeight
+     * @param stampWidth
+     * @return
+     */
+    public boolean possibleToStamp(int[][] grid, int stampHeight, int stampWidth) {
+        int m = grid.length;
+        int n = grid[0].length;
+
+        // 1. 计算 grid 的二维前缀和
+        int[][] s = new int[m + 1][n + 1];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                s[i + 1][j + 1] = s[i + 1][j] + s[i][j + 1] - s[i][j] + grid[i][j];
             }
-            for (int key : map.keySet()) {
-                Integer integer = map.get(key);
-                if (integer != key) {
+        }
+
+        // 2. 计算二维差分
+        // 为方便第 3 步的计算，在 d 数组的最上面和最左边各加了一行（列），所以下标要 +1
+        int[][] d = new int[m + 2][n + 2];
+        for (int i2 = stampHeight; i2 <= m; i2++) {
+            for (int j2 = stampWidth; j2 <= n; j2++) {
+                int i1 = i2 - stampHeight + 1;
+                int j1 = j2 - stampWidth + 1;
+                if (s[i2][j2] - s[i2][j1 - 1] - s[i1 - 1][j2] + s[i1 - 1][j1 - 1] == 0) {
+                    d[i1][j1]++;
+                    d[i1][j2 + 1]--;
+                    d[i2 + 1][j1]--;
+                    d[i2 + 1][j2 + 1]++;
+                }
+            }
+        }
+
+        // 3. 还原二维差分矩阵对应的计数矩阵（原地计算）
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                d[i + 1][j + 1] += d[i + 1][j] + d[i][j + 1] - d[i][j];
+                if (grid[i][j] == 0 && d[i + 1][j + 1] == 0) {
                     return false;
                 }
             }
-            return true;
         }
+        return true;
+    }
 }
