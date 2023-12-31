@@ -143,16 +143,42 @@ public class Solution {
         Stack<Integer> stack = new Stack<>();
         stack.push(0);
         for (int i = 1; i <= n; i++) {
-            s[i] = s[i - 1] + (hours[i-1] > 8 ? 1 : -1);
+            s[i] = s[i - 1] + (hours[i - 1] > 8 ? 1 : -1);
             if (s[i] < s[stack.peek()]) {
                 stack.push(i);
             }
         }
         for (int i = n; i > 0; --i) {
             while (!stack.empty() && s[i] > s[stack.peek()]) {
-                ans = Math.max(ans, i-stack.pop());
+                ans = Math.max(ans, i - stack.pop());
             }
         }
         return ans;
+    }
+
+
+    /**
+     * 56. 合并区间
+     *
+     * @param intervals
+     * @return
+     */
+    public int[][] merge(int[][] intervals) {
+        if (intervals.length == 0) {
+            return new int[0][2];
+        }
+        Arrays.sort(intervals, Comparator.comparingInt(o -> o[0]));
+        List<int[]> list = new ArrayList<>();
+        for (int i = 0; i < intervals.length; i++) {
+            int l = intervals[i][0];
+            int r = intervals[i][1];
+            int[] ints = list.isEmpty() ?null:list.get(list.size() - 1);
+            if (list.size() == 0 || ints[1] < l) {
+                list.add(new int[]{l, r});
+            } else {
+                ints[1] = Math.max(r, ints[1]);
+            }
+        }
+        return list.toArray(new int[intervals.length][]);
     }
 }

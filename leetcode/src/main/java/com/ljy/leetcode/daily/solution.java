@@ -1,5 +1,7 @@
 package com.ljy.leetcode.daily;
 
+import com.ljy.datastruct.TreeNode;
+
 import java.util.*;
 
 /**
@@ -168,20 +170,21 @@ public class solution {
      */
     public String makeSmallestPalindrome(String s) {
         char[] charArray = s.toCharArray();
-        for (int i = 0; i < s.length()/2; i++) {
-            char c =charArray[i];
-            char d = charArray[s.length()-i-1];
-            if (c != d){
-                charArray[i] = charArray[s.length()-i-1] = (char) Math.max(c,d);
+        for (int i = 0; i < s.length() / 2; i++) {
+            char c = charArray[i];
+            char d = charArray[s.length() - i - 1];
+            if (c != d) {
+                charArray[i] = charArray[s.length() - i - 1] = (char) Math.max(c, d);
             }
         }
 
-        return  new String(charArray);
+        return new String(charArray);
     }
 
     /**
-     *  2023/12/13
-     *  2132. 用邮票贴满网格图
+     * 2023/12/13
+     * 2132. 用邮票贴满网格图
+     *
      * @param grid
      * @param stampHeight
      * @param stampWidth
@@ -225,5 +228,61 @@ public class solution {
             }
         }
         return true;
+    }
+
+
+    public TreeNode reverseOddLevels(TreeNode root) {
+        Queue<TreeNode> queue = new ArrayDeque();
+        queue.offer(root);
+        boolean flag = false;
+        while (!queue.isEmpty()) {
+            List<TreeNode> nodes = new ArrayList<>();
+            int sz = queue.size();
+            for (int i = 0; i < sz; i++) {
+                TreeNode poll = queue.poll();
+                if (flag) {
+                    nodes.add(poll);
+                }
+                if (poll.left != null) {
+                    queue.offer(poll.left);
+                    queue.offer(poll.right);
+                }
+            }
+            if (false) {
+                int left = 0, right = nodes.size() - 1;
+                while (left < right) {
+                    nodes.get(left).val = nodes.get(left).val ^nodes.get(right).val;
+                    nodes.get(right).val = nodes.get(right).val ^nodes.get(left).val;
+                    nodes.get(left).val = nodes.get(left).val ^nodes.get(right).val;
+                    left++;
+                    right--;
+                }
+            }
+        }
+        return root;
+    }
+
+    /**
+     * 2023-12-31
+     * 1154. 一年中的第几天
+     * @param date
+     * @return
+     */
+    public int dayOfYear(String date) {
+        int[] days = {31,28,31,30,31,30,31,31,30,31,30,31};
+        String s = date.substring(0, 4);
+        Integer value = Integer.valueOf(s);
+        //判断是否闰年
+        if (value%400==0||(value%4==0&&value%100!=0)){
+            days[1]=29;
+        }
+        int count=0;
+        String s1 = date.substring(5, 7);
+        String s2 = date.substring(8);
+        for (int i=0; i<Integer.valueOf(s1)-1;i++){
+            count+=days[i];
+        }
+
+        return count+Integer.valueOf(s2);
     }
 }
