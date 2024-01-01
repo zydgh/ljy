@@ -1,4 +1,4 @@
-package com.ljy.leetcode.daily;
+package com.ljy.leetcode.daily._2023._12;
 
 import com.ljy.datastruct.TreeNode;
 
@@ -15,7 +15,7 @@ public class solution {
      * 2477. 到达首都的最少油耗
      *
      * @param roads
-     * @param seats
+     * @param seats 
      * @return
      * @Da
      */
@@ -128,6 +128,7 @@ public class solution {
 
 
     /**
+     *
      * 2048. 下一个更大的数值平衡数
      *
      * @param n
@@ -182,7 +183,7 @@ public class solution {
     }
 
     /**
-     * 2023/12/13
+     * 2023/12/14
      * 2132. 用邮票贴满网格图
      *
      * @param grid
@@ -251,9 +252,9 @@ public class solution {
             if (false) {
                 int left = 0, right = nodes.size() - 1;
                 while (left < right) {
-                    nodes.get(left).val = nodes.get(left).val ^nodes.get(right).val;
-                    nodes.get(right).val = nodes.get(right).val ^nodes.get(left).val;
-                    nodes.get(left).val = nodes.get(left).val ^nodes.get(right).val;
+                    nodes.get(left).val = nodes.get(left).val ^ nodes.get(right).val;
+                    nodes.get(right).val = nodes.get(right).val ^ nodes.get(left).val;
+                    nodes.get(left).val = nodes.get(left).val ^ nodes.get(right).val;
                     left++;
                     right--;
                 }
@@ -265,24 +266,47 @@ public class solution {
     /**
      * 2023-12-31
      * 1154. 一年中的第几天
+     *
      * @param date
      * @return
      */
     public int dayOfYear(String date) {
-        int[] days = {31,28,31,30,31,30,31,31,30,31,30,31};
+        int[] days = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
         String s = date.substring(0, 4);
         Integer value = Integer.valueOf(s);
         //判断是否闰年
-        if (value%400==0||(value%4==0&&value%100!=0)){
-            days[1]=29;
+        if (value % 400 == 0 || (value % 4 == 0 && value % 100 != 0)) {
+            days[1] = 29;
         }
-        int count=0;
+        int count = 0;
         String s1 = date.substring(5, 7);
         String s2 = date.substring(8);
-        for (int i=0; i<Integer.valueOf(s1)-1;i++){
-            count+=days[i];
+        for (int i = 0; i < Integer.valueOf(s1) - 1; i++) {
+            count += days[i];
         }
 
-        return count+Integer.valueOf(s2);
+        return count + Integer.valueOf(s2);
+    }
+
+    /**
+     * 2023-12-30
+     * 1185. 一周中的第几天
+     *
+     * @param day
+     * @param month
+     * @param year
+     * @return
+     */
+    public String dayOfTheWeek(int day, int month, int year) {
+        if (month < 3) {
+            year -= 1;
+            month += 12;
+        }
+        String[] b = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+        int c = year / 100, y = year - 100 * c;
+        //蔡勒（Zeller）公式
+        int w = c / 4 - 2 * c + y + y / 4 + 26 * (month + 1) / 10 + day - 1;
+        w = (w % 7 + 7) % 7;
+        return b[w];
     }
 }
