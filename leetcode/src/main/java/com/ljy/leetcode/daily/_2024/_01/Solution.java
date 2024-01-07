@@ -1,5 +1,12 @@
 package com.ljy.leetcode.daily._2024._01;
 
+import com.ljy.leetcode.job.ListNode;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * @ClassName Solution
  * @Description
@@ -56,5 +63,136 @@ public class Solution {
             }
         }
         return maxMoney > 0 ? ans : -1;
+    }
+
+    /**
+     * 2024-01-02
+     * 466. 统计重复个数
+     *
+     * @param s1
+     * @param n1
+     * @param s2
+     * @param n2
+     * @return
+     */
+    public int getMaxRepetitions(String s1, int n1, String s2, int n2) {
+        if (n1 == 0) {
+            return 0;
+        }
+        char[] c1 = s1.toCharArray();
+        char[] c2 = s2.toCharArray();
+        //经历多少s1
+        int cout1 = 0;
+        //经历多少s2
+        int cout2 = 0;
+        int l1 = s1.length();
+        int l2 = s2.length();
+        int p = 0;
+        return cout2 / n2;
+    }
+
+
+    /**
+     * 2024-01-03
+     * 2487. 从链表中移除节点
+     *
+     * @param head
+     * @return
+     */
+    public ListNode removeNodes(ListNode head) {
+        if (head == null) {
+            return null;
+        }
+        head.next = removeNodes(head.next);
+        if (head.next != null && head.val < head.next.val) {
+            return head.next;
+        }
+        return head;
+    }
+
+    /**
+     * 2024-01-06
+     * 1944. 队列中可以看到的人数
+     *
+     * @param heights
+     * @return
+     */
+    public int[] canSeePersonsCount(int[] heights) {
+        int n = heights.length;
+        int[] ans = new int[n];
+        int[] st = new int[n];
+        int top = -1;
+        for (int i = n - 1; i >= 0; i--) {
+            while (top >= 0 && st[top] < heights[i]) {
+                top--;
+                ans[i]++;
+            }
+            if (top >= 0) { // 还可以再看到一个人
+                ans[i]++;
+            }
+            st[++top] = heights[i];
+        }
+        return ans;
+    }
+
+    /**
+     * 2024-01-06
+     * 2807. 在链表中插入最大公约数
+     *
+     * @param head
+     * @return
+     */
+    public ListNode insertGreatestCommonDivisors(ListNode head) {
+        ListNode p = head;
+        while (p != null && p.next != null) {
+            int gcd = gcd(p.val, p.next.val);
+            ListNode node = new ListNode(gcd, p.next);
+            p.next = node;
+            p = node.next;
+        }
+        return head;
+    }
+
+
+    /**
+     * 求最大公约数 （欧几里得算法）辗转相除
+     *
+     * @param a
+     * @param b
+     * @return
+     */
+    private int gcd(int a, int b) {
+        while (b != 0) {
+            int temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    }
+
+
+    /**
+     * 2024-01-07
+     * 383. 赎金信
+     *
+     * @param ransomNote
+     * @param magazine
+     * @return
+     */
+    public static boolean canConstruct(String ransomNote, String magazine) {
+        if (ransomNote.length() > magazine.length()) {
+            return false;
+        }
+        int[] c = new int[26];
+        for (char cc :magazine.toCharArray()) {
+            c[cc - 'a']++;
+        }
+        for (char c1:ransomNote.toCharArray()) {
+            c[c1-'a']--;
+            if (c[c1-'a'] < 0) {
+                return false;
+            }
+        }
+        return true;
     }
 }
